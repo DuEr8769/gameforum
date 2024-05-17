@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from "react";
 import { Menu, Search } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import 'firebase/compat/auth';
@@ -7,8 +7,9 @@ import firebase from './utils/firebase';
 
 function Header() {
 
-    const [user, setUser] = React.useState(null);
-    React.useEffect(() => {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
         firebase.auth().onAuthStateChanged((currentUser) => {
             setUser(currentUser)
         });
