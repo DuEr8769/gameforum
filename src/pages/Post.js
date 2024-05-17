@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid, Container, Image, Header, Segment, Icon, Comment, Form } from 'semantic-ui-react';
+import { Image, Header, Segment, Icon, Comment, Form } from 'semantic-ui-react';
 
 import firebase from "../utils/firebase";
-import Topics from '../components/Topics';
 
 
 function Post() {
@@ -89,65 +88,57 @@ function Post() {
     }
 
     return (    
-    <Container>
-        <Grid>
-            <Grid.Row>
-                <Grid.Column width={3}> <Topics /> </Grid.Column>
-                <Grid.Column width={10}>  
-                    {post.author.photoURL ? (
-                    <Image src={post.author.photoURL} avatar/>
-                    ) : (
-                    <Icon name="user circle" />
-                    )}
-                    {post.author.displayName || '使用者'}
-                    <Header>
-                        {post.title}
-                        <Header.Subheader>
-                            {post.topic}。{post.createdAt?.toDate().toLocaleDateString()}
-                        </Header.Subheader>
-                    </Header>
-                    <Image src = {post.imageUrl} />
-                    <Segment basic vertical>
-                        {post.content}
-                    </Segment>
-                    <Segment basic vertical>
-                        留言 {post.commentsCount || 0}。讚 {post.likedBy?.length || 0} 。
-                        <Icon name ={`thumbs up${isLiked ? '' : ' outline'} `} 
-                        color={isLiked ? 'blue' : 'grey'} 
-                        link
-                        onClick={() => toggle(isLiked, 'likedBy')} />。
-                        <Icon name= {`bookmark${isCollected ? '' : ' outline'} `}
-                        color={isCollected ? 'blue' : 'grey'} 
-                        link 
-                        onClick={() => toggle(isCollected, 'collectedBy')} />
-                    </Segment>
-                    <Comment.Group>
-                        <Form >
-                            <Form.TextArea 
-                            value={commentContent} 
-                            onChange={(e) => setCommentContent(e.target.value)} />
-                                <Form.Button onClick={onSubmit} loading={isLoading} >
-                                    留言</Form.Button>
-                        </Form>
-                    <Header>共 {post.commentsCount || 0} 則留言 </Header>
-                    {comments.map((comment) => {
-                        return (
-                        <Comment key={post.id} >
-                            <Comment.Avatar src={comment.author.photoURL} />
-                            <Comment.Content>
-                                <Comment.Author as="span" >{comment.author.displayName || '使用者'}</Comment.Author>
-                                <Comment.Metadata> {comment.createdAt.toDate().toLocaleString()} </Comment.Metadata>
-                                <Comment.Text>{comment.content}</Comment.Text>
-                            </Comment.Content>
-                        </Comment>
-                        );
-                    })}
-                    </Comment.Group>
-                </Grid.Column>
-                <Grid.Column width={3}>789</Grid.Column>
-            </Grid.Row>
-        </Grid>
-    </Container>
+        <>
+        {post.author.photoURL ? (
+        <Image src={post.author.photoURL} avatar/>
+        ) : (
+        <Icon name="user circle" />
+        )}
+        {post.author.displayName || '使用者'}
+        <Header>
+            {post.title}
+            <Header.Subheader>
+                {post.topic}。{post.createdAt?.toDate().toLocaleDateString()}
+            </Header.Subheader>
+        </Header>
+        <Image src = {post.imageUrl} />
+        <Segment basic vertical>
+            {post.content}
+        </Segment>
+        <Segment basic vertical>
+            留言 {post.commentsCount || 0}。讚 {post.likedBy?.length || 0} 。
+            <Icon name ={`thumbs up${isLiked ? '' : ' outline'} `} 
+            color={isLiked ? 'blue' : 'grey'} 
+            link
+            onClick={() => toggle(isLiked, 'likedBy')} />。
+            <Icon name= {`bookmark${isCollected ? '' : ' outline'} `}
+            color={isCollected ? 'blue' : 'grey'} 
+            link 
+            onClick={() => toggle(isCollected, 'collectedBy')} />
+        </Segment>
+        <Comment.Group>
+            <Form >
+                <Form.TextArea 
+                value={commentContent} 
+                onChange={(e) => setCommentContent(e.target.value)} />
+                    <Form.Button onClick={onSubmit} loading={isLoading} >
+                        留言</Form.Button>
+            </Form>
+        <Header>共 {post.commentsCount || 0} 則留言 </Header>
+        {comments.map((comment) => {
+            return (
+            <Comment key={post.id} >
+                <Comment.Avatar src={comment.author.photoURL} />
+                <Comment.Content>
+                    <Comment.Author as="span" >{comment.author.displayName || '使用者'}</Comment.Author>
+                    <Comment.Metadata> {comment.createdAt.toDate().toLocaleString()} </Comment.Metadata>
+                    <Comment.Text>{comment.content}</Comment.Text>
+                </Comment.Content>
+            </Comment>
+            );
+        })}
+        </Comment.Group>
+        </>
     );
 }
 

@@ -1,12 +1,13 @@
-import React from "react";
+import { useEffect, useState } from 'react';
 import { List } from "semantic-ui-react";
 import "firebase/compat/firestore";
 import firebase from "../utils/firebase";
 
 
 function Topics() {
-    const [topics, setTopics] = React.useState([]);
-    React.useEffect( () => {
+    const [topics, setTopics] = useState([]);
+
+    useEffect( () => {
         firebase
         .firestore()
         .collection("topics")
@@ -18,6 +19,7 @@ function Topics() {
             setTopics(data);
         } );
     }, []);
+    
     return <List animated selection>
         {topics.map(topics => {
         return <List.Item key={topics.name}>{topics.name} </List.Item>;

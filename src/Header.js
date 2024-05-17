@@ -24,7 +24,7 @@ function Header() {
             <Menu.Item > <Search/> </Menu.Item>
                 {user ?(<>
                     <Menu.Item as={Link} to="/new-post">發表文章</Menu.Item>
-                    <Menu.Item as={Link} to="/my">會員</Menu.Item>
+                    <Menu.Item as={Link} to="/my/posts">會員</Menu.Item>
                     <Menu.Item onClick={() => firebase.auth().signOut()}>登出</Menu.Item>
                 </>):(
                     <Menu.Item as={Link} to="/signin">註冊/登入</Menu.Item>
