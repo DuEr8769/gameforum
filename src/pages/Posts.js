@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Grid, Item, Image, Icon, Container } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
@@ -6,8 +6,13 @@ import firebase from "../utils/firebase";
 import Topics from '../components/Topics';
 
 function Posts() {
-    const [posts, setPosts] = React.useState([]);
-    React.useEffect(() => {
+
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        let isMounted = true;
+        
         firebase
         .firestore()
         .collection("posts")
@@ -18,8 +23,19 @@ function Posts() {
                 return { ...docSnapshot.data(), id};
             });
             setPosts(data);
+            setLoading(false);
         });
+
+        return () => { 
+            isMounted = false; 
+        };
+
     }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
     <Container>
     <Grid>

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Grid, Container, Image, Header, Segment, Icon, Comment, Form } from 'semantic-ui-react';
 
@@ -8,14 +8,14 @@ import Topics from '../components/Topics';
 
 function Post() {
     const { postId } = useParams();
-    const [post, setPost] = React.useState({
+    const [post, setPost] = useState({
         author: {},
     });
-    const [commentContent, setCommentContent] = React.useState('');
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [comments, setComments] = React.useState([]);
+    const [commentContent, setCommentContent] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [comments, setComments] = useState([]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         firebase
         .firestore()
         .collection('posts')
@@ -26,7 +26,7 @@ function Post() {
         });
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         firebase
           .firestore()
           .collection('posts')

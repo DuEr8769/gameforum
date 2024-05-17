@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Container, Header, Form, Image, Button } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
 import "firebase/compat/firestore";
@@ -7,12 +7,12 @@ import firebase from "../utils/firebase";
 
 function NewPosts() {
     const navigate = useNavigate();
-    const [title, setTitle] = React.useState('');
-    const [content, setContent] = React.useState('');
-    const [topics, setTopics] = React.useState([]);
-    const [topicsName, setTopicsName] = React.useState("");
-    const [file, setFile] = React.useState(null);
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [topics, setTopics] = useState([]);
+    const [topicsName, setTopicsName] = useState("");
+    const [file, setFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect( () => {
         firebase

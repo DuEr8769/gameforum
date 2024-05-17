@@ -14,7 +14,8 @@ function Header() {
         });
     }, []);
 
-    return<Menu>
+    return (
+    <Menu>
         <Menu.Item as={Link} to="/">啊哈姆特遊戲論壇</Menu.Item>
         <Menu.Item as={Link} to="/gamenews">遊戲</Menu.Item>
         <Menu.Item as={Link} to="/posts">討論</Menu.Item>
@@ -29,7 +30,8 @@ function Header() {
                 )
                 }
         </Menu.Menu>
-    </Menu>;
+    </Menu>
+    );
 }
 
 export default Header;

@@ -1,4 +1,4 @@
-import React ,{useState}from "react"; 
+import {useState}from "react"; 
 import { Menu, Form, Container, Message } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import 'firebase/compat/auth';
@@ -6,23 +6,27 @@ import firebase from '../utils/firebase';
 
 function Signin() {
     const navigate = useNavigate();
-    const [activeItem,setActiveItem] = React.useState('register');
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [activeItem,setActiveItem] = useState('register');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
 
 
-    function onSubmit() {
+    function onSubmit(e) {
+        e.preventDefault();
         setIsLoading(true);
         if (activeItem === 'register') {
             firebase
             .auth()
             .createUserWithEmailAndPassword(email, password)
             .then(() => {
-                navigate('/');
+                setEmail(''); 
+                setPassword('');
+                setErrorMessage('');
                 setIsLoading(false);
+                navigate('/');
             })
             .catch((error) => {
                 switch(error.code) {
@@ -36,6 +40,7 @@ function Signin() {
                         setErrorMessage('密碼強度不足');
                         break;
                     default:
+                        setErrorMessage('註冊失敗，請稍後再試');
                 }
                 setIsLoading(false);
             });
@@ -45,11 +50,14 @@ function Signin() {
             .auth()
             .signInWithEmailAndPassword(email, password)
             .then(() => {
-                navigate('/');
+                setEmail('');
+                setPassword('');
+                setErrorMessage('');
                 setIsLoading(false);
+                navigate('/');
             })
             .catch((error) => {
-                if (error.code == "auth/invalid-email"){
+                if (error.code === "auth/invalid-email"){
                     setErrorMessage('信箱格式不正確');
                 }
                 else {
