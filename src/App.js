@@ -18,6 +18,7 @@ import MyMenu from './components/MyMenu';
 function App() {
     return (
         <BrowserRouter>
+        <BrowserRouter basename="/gameforum" />.
         <Header />
         <Routes>
             <Route path="/" element={"首頁"} />
