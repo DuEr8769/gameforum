@@ -11,7 +11,7 @@ function Post({ post }) {
             <Item.Content>
                 <Item.Meta>
                     {post.author.photoURL ? ( 
-                        <Image src = {post.author.photoURL} /> 
+                        <Image src = {post.author.photoURL} avatar /> 
                     ) : (
                         <Icon name="user circle"/> 
                     )}
