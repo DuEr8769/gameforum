@@ -1,5 +1,8 @@
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet ,Navigate } from 'react-router-dom';
 import { Container, Grid } from 'semantic-ui-react';
+import { useEffect, useState } from 'react';
+import firebase from './utils/firebase';
+
 
 import Header from './Header';
 
@@ -15,10 +18,19 @@ import MySettings from './pages/MySettings';
 import Topics from './components/Topics';
 import MyMenu from './components/MyMenu';
 
+
 function App() {
-    return (
+  const [user, setUser] = useState(null); 
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+    })
+  },[]);
+  
+  return (
         <BrowserRouter basename="/gameforum" >
-        <Header />
+        <Header user ={ user }/>
         <Routes>
             <Route path="/" element={"首頁"} />
 
@@ -27,15 +39,15 @@ function App() {
             <Route path=":postId" element={<Post />} />
             </Route>
 
-            <Route path="/my" element={<MyPageViewLayout />}>
+            <Route path="/my" element={<MyPageViewLayout user ={user}/>}>
             <Route index element={""} />
             <Route path="posts" element={<MyPosts />} />
             <Route path="collections" element={<MyCollection />} />
             <Route path="settings" element={<MySettings />} />
             </Route>
 
-            <Route path="/signin" element={<Signin />} />
-            <Route path="/new-post" element={<NewPosts />} />
+            <Route path="/signin" element={user ? <Navigate to='/'/>  : <Signin /> } />
+            <Route path="/new-post" element={user ? <NewPosts /> : <Navigate to='/'/> } />
             <Route path="/gamenews" element={<GameNews />} />
         </Routes>
         </BrowserRouter>
@@ -61,8 +73,11 @@ const PostViewLayout = () => {
     );
   };
 
-  const MyPageViewLayout = () => {
+  const MyPageViewLayout = ({user}) => {
+
     return (
+      <>
+      {user ? (
       <Container>
         <Grid>
           <Grid.Row>
@@ -75,7 +90,11 @@ const PostViewLayout = () => {
             <Grid.Column width={3}></Grid.Column>
           </Grid.Row>
         </Grid>
-      </Container>
+      </Container> 
+    ):( 
+      <Navigate to='/'/>
+    )}
+    </>
     );
   };
 

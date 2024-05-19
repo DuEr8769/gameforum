@@ -23,7 +23,7 @@ function Post() {
             const data = docSnapshot.data();
             setPost(data);
         });
-    }, []);
+    }, [postId]);
 
     useEffect(() => {
         firebase
@@ -38,11 +38,15 @@ function Post() {
             });
             setComments(data);
           });
-      }, []);
+      }, [postId]);
 
+    const currentUser = firebase.auth().currentUser;
 
     function toggle(isActive, field) {
-        const uid = firebase.auth().currentUser.uid;
+        if (!currentUser) {
+            return;
+        }
+        const uid = currentUser.uid;
         firebase
             .firestore()
             .collection('posts')
@@ -55,11 +59,14 @@ function Post() {
     }
 
 
-    const isCollected = post.collectedBy?.includes(firebase.auth().currentUser.uid);
+    const isCollected = currentUser && post.collectedBy?.includes(currentUser.uid);
 
-    const isLiked = post.likedBy?.includes(firebase.auth().currentUser.uid);
-
+    const isLiked = currentUser && post.likedBy?.includes(currentUser.uid);
+    
     function onSubmit() {
+        if (!currentUser) {
+            return;
+        }
         setIsLoading(true);
         const firestore = firebase.firestore();
 
@@ -127,7 +134,7 @@ function Post() {
         <Header>共 {post.commentsCount || 0} 則留言 </Header>
         {comments.map((comment) => {
             return (
-            <Comment key={post.id} >
+            <Comment key={comment.createdAt?.seconds} >
                 <Comment.Avatar src={comment.author.photoURL} />
                 <Comment.Content>
                     <Comment.Author as="span" >{comment.author.displayName || '使用者'}</Comment.Author>

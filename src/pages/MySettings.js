@@ -115,6 +115,71 @@ function MyPhoto({ user }) {
     );
 }
 
+function MyPassword({ user }) {
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+
+    function onSubmit() {
+        setIsLoading(true);
+        const credential = firebase.auth.EmailAuthProvider.credential(
+            user.email, 
+            oldPassword
+        );
+        user.reauthenticateWithCredential(credential).then(() => {
+            user.updatePassword(newPassword).then(() => {
+                setIsModalOpen(false);
+                setOldPassword('');
+                setNewPassword('');
+                setIsLoading(false);
+            })
+        });
+        user.updatePassword(newPassword);
+    }
+
+    return (
+    <>
+        <Header size="small">
+        會員密碼
+        <Button floated="right" onClick={() => setIsModalOpen(true)}>修改</Button>
+        </Header>
+        <Segment vertical>
+        ******
+        </Segment>
+        <Modal open={isModalOpen} size="mini" >
+            <Modal.Header>修改會員密碼</Modal.Header>
+                <Modal.Content>
+                    <Header size="small">
+                        目前密碼
+                    </Header>
+                    <Input 
+                    placeholder="輸入舊密碼" 
+                    value={oldPassword}
+                    onChange={e => setOldPassword(e.target.value)}
+                    fluid
+                    />
+                    <Header size="small">
+                        新密碼
+                    </Header>
+                    <Input 
+                    placeholder="輸入新密碼" 
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                    fluid
+                    />
+                </Modal.Content>
+            <Modal.Actions>
+                <Button onClick={() => setIsModalOpen(false)}>取消</Button>
+                <Button onClick={onSubmit} loading={isLoading}>修改</Button>
+            </Modal.Actions>
+        </Modal>
+    </>
+    );
+}
+
+
 function MySettings() {
     const [user, setUser] = useState({});
 
@@ -129,13 +194,7 @@ function MySettings() {
         <Header>會員資料</Header>
         <MyName user={user} />
         <MyPhoto user={user} />
-        <Header size="small">
-            會員密碼
-        <Button floated="right">修改</Button>
-        </Header>
-        <Segment vertical>
-            ******
-        </Segment>
+        <MyPassword user={user} />
         </>
     );
 

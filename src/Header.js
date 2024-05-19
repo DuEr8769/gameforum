@@ -1,19 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Menu, Search } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import 'firebase/compat/auth';
 import firebase from './utils/firebase';
 
+import algolia from "./utils/algolia";
 
-function Header() {
+function Header({user}) {
+    const navigate = useNavigate();
+    const [inputValue, setInputValue] = useState('');
+    const [results, setResults] = useState([]);
 
-    const [user, setUser] = useState(null);
+    function onSearchChange(e, { value }) {
+        setInputValue(value);
 
-    useEffect(() => {
-        firebase.auth().onAuthStateChanged((currentUser) => {
-            setUser(currentUser)
+        algolia.search(value).then((result) => {
+            const searchResults = result.hits.map(hit => {
+                return {
+                    title: hit.title,
+                    description: hit.description,
+                    id: hit.objectID
+                };
+            });
+            setResults(searchResults);
         });
-    }, []);
+    }
+
+    function onResultSelect(e, { result }){
+        navigate(`/post/${result.id}`);
+    }
 
     return (
     <Menu>
@@ -21,7 +37,15 @@ function Header() {
         <Menu.Item as={Link} to="/gamenews">遊戲</Menu.Item>
         <Menu.Item as={Link} to="/posts">討論</Menu.Item>
         <Menu.Menu position='right'>
-            <Menu.Item > <Search/> </Menu.Item>
+            <Menu.Item > 
+            <Search
+                value={inputValue}
+                onSearchChange={onSearchChange}
+                results={results}
+                noResultsMessage="找不到相關文章"
+                onResultSelect={onResultSelect}
+            /> 
+            </Menu.Item>
                 {user ?(<>
                     <Menu.Item as={Link} to="/new-post">發表文章</Menu.Item>
                     <Menu.Item as={Link} to="/my/posts">會員</Menu.Item>

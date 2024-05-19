@@ -14,8 +14,8 @@ function Post({ post }) {
                         <Image src = {post.author.photoURL} avatar /> 
                     ) : (
                         <Icon name="user circle"/> 
-                    )}
-                    {post.topic}。{post.author.displayName || '使用者'}
+                    )}{' '}
+                    {post.author.displayName || '使用者'}。{post.topic}
                 </Item.Meta>
                 <Item.Header> {post.title} </Item.Header>
                 <Item.Description> {post.content} </Item.Description>
