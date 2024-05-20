@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { List, Search } from "semantic-ui-react";
+import { List } from "semantic-ui-react";
 import { Link, useLocation } from 'react-router-dom';
 import "firebase/compat/firestore";
 import firebase from "../utils/firebase";

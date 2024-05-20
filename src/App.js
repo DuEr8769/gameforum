@@ -3,6 +3,9 @@ import { Container, Grid } from 'semantic-ui-react';
 import { useEffect, useState } from 'react';
 import firebase from './utils/firebase';
 
+import { Slide } from 'react-slideshow-image';
+import 'react-slideshow-image/dist/styles.css';
+import './App.css';
 
 import Header from './Header';
 
@@ -15,6 +18,7 @@ import MyPosts from './pages/MyPosts';
 import MyCollection from './pages/MyCollections';
 import MySettings from './pages/MySettings';
 
+import Rewards from './pages/Rewards';
 import Topics from './components/Topics';
 import MyMenu from './components/MyMenu';
 
@@ -30,9 +34,9 @@ function App() {
   
   return (
         <BrowserRouter basename="/gameforum" >
-        <Header user ={ user }/>
+        <Header user ={ user } />
         <Routes>
-            <Route path="/" element={"首頁"} />
+            <Route path="/" element={<IndexPage/>} />
 
             <Route path="/posts" element={<PostViewLayout />}>
             <Route index element={<Posts />} />
@@ -46,6 +50,7 @@ function App() {
             <Route path="settings" element={<MySettings />} />
             </Route>
 
+            <Route path="/rewards" element={user ? <Rewards /> : <Navigate to='/'/> } />
             <Route path="/signin" element={user ? <Navigate to='/'/>  : <Signin /> } />
             <Route path="/new-post" element={user ? <NewPosts /> : <Navigate to='/'/> } />
             <Route path="/gamenews" element={<GameNews />} />
@@ -54,6 +59,36 @@ function App() {
     );
 
 }
+
+const IndexPage = () => {
+
+  const slideImages = [
+    'https://cdn.pixabay.com/photo/2016/11/04/03/20/cat-1796834_640.jpg',
+    'https://thumb.photo-ac.com/f3/f36c375c339f1212cceb122fdb9d0808_t.jpeg',
+    'https://memeprod.ap-south-1.linodeobjects.com/user-template/ceded397639ef369a044490617be3b74.png'
+  ];
+
+  return (
+    <Container>
+
+          <Slide>
+            {slideImages.map((each, index) => (
+              <div key={index} className="each-slide">
+                <div style={{ 'backgroundImage': `url(${each})` }}>
+                </div>
+              </div>
+            ))}
+          </Slide>
+          <h1>公告</h1>
+          <h1>討論文章</h1>
+          <Posts></Posts>
+
+
+    </Container>
+  );
+
+}
+
 
 const PostViewLayout = () => {
     return (

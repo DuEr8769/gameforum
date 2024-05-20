@@ -88,6 +88,12 @@ function Post() {
             },
         });
 
+        const userRef = firestore.collection('userpoints').doc(currentUser.uid);
+        batch.update(userRef, {
+            points: firebase.firestore.FieldValue.increment(5) // 假設每次留言獲得5積分
+        });
+    
+
         batch.commit().then(() => {
             setCommentContent('');
             setIsLoading(false);

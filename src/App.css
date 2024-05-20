@@ -1,0 +1,17 @@
+.each-slide > div {
+    background-size: cover;
+    background-position: center;
+    height: 600px; /* 調整為您希望的圖片高度 */
+    width: 100%; /* 確保圖片寬度擴展到容器的寬度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .each-slide > div > span {
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+  }

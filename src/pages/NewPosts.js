@@ -41,6 +41,7 @@ function NewPosts() {
 
     function onSubmit() {
         setIsLoading(true);
+
         const documentRef = firebase.firestore().collection('posts').doc();
         const fileRef = firebase.storage().ref('post-image/' + documentRef.id);
         const metadata = {

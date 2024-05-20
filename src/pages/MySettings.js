@@ -179,6 +179,44 @@ function MyPassword({ user }) {
     );
 }
 
+function MyRewards() {
+    const [activated, setActivated] = useState(false);
+    const documentRef = firebase.firestore().collection('userpoints').doc(firebase.auth().currentUser.uid);
+
+    useEffect(() => {
+        const unsubscribe = documentRef.onSnapshot((doc) => {
+            if (doc.exists) {
+                setActivated(true);
+            } else {
+                setActivated(false);
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    function onSubmit() {
+        documentRef
+            .set({
+                points: 0,
+            })
+            .then(() => {
+                localStorage.setItem('activated', 'true');
+                setActivated(true);
+            });
+    }
+
+    return (
+        <>
+            <Header size="small">
+                積分系統
+                <Button floated="right" onClick={onSubmit} disabled={activated}>
+                    {activated ? '已啟用' : '啟用'}
+                </Button>
+            </Header>
+        </>
+    );
+}
 
 function MySettings() {
     const [user, setUser] = useState({});
@@ -195,6 +233,7 @@ function MySettings() {
         <MyName user={user} />
         <MyPhoto user={user} />
         <MyPassword user={user} />
+        <MyRewards />
         </>
     );
 

@@ -26,7 +26,7 @@ function Signin() {
                 setPassword('');
                 setErrorMessage('');
                 setIsLoading(false);
-                navigate('/');
+                navigate('/my/settings');
             })
             .catch((error) => {
                 switch(error.code) {
