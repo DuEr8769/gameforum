@@ -28,7 +28,7 @@ function Header({user}) {
     }
 
     function onResultSelect(e, { result }){
-        navigate(`/post/${result.id}`);
+        navigate(`/posts/${result.id}`);
     }
 
     return (
