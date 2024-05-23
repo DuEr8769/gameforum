@@ -47,15 +47,28 @@ function Post() {
             return;
         }
         const uid = currentUser.uid;
-        firebase
-            .firestore()
-            .collection('posts')
-            .doc(postId)
-            .update({
-                [field]: isActive
-                ? firebase.firestore.FieldValue.arrayRemove(uid) 
+        const batch = firebase.firestore().batch();
+        const postRef = firebase.firestore().collection('posts').doc(postId);
+    
+        batch.update(postRef, {
+            [field]: isActive
+                ? firebase.firestore.FieldValue.arrayRemove(uid)
                 : firebase.firestore.FieldValue.arrayUnion(uid),
+        });
+    
+        // 更新積分
+        if (field === 'likedBy') {
+            const userRef = firebase.firestore().collection('userpoints').doc(uid);
+            batch.update(userRef, {
+                points: firebase.firestore.FieldValue.increment(isActive ? -5 : 5),
             });
+        }
+    
+        batch.commit().then(() => {
+            console.log('Batch write successful!');
+        }).catch((error) => {
+            console.error('Error updating document: ', error);
+        });
     }
 
 
@@ -108,6 +121,11 @@ function Post() {
         <Icon name="user circle" />
         )}
         {post.author.displayName || '使用者'}
+        <div>
+        <span style={{ fontWeight: 'bold', color: 'red' }}>
+                        {post.author.titlename || ''}
+        </span>
+        </div>
         <Header>
             {post.title}
             <Header.Subheader>

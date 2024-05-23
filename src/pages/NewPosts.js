@@ -13,6 +13,7 @@ function NewPosts() {
     const [topicsName, setTopicsName] = useState("");
     const [file, setFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [nowTitle, setNowTitle] = useState('');
 
     useEffect( () => {
         firebase
@@ -38,10 +39,21 @@ function NewPosts() {
     ? URL.createObjectURL(file) 
     :"https://upload.wikimedia.org/wikipedia/commons/7/78/Image.jpg";
 
+    useEffect(() => {
+        const user = firebase.auth().currentUser;
+        if (user) {
+            const titlename = firebase.firestore().collection('userpoints').doc(user.uid);
+            titlename.get().then((doc) => {
+                const data = doc.data();
+                setNowTitle(data.nowtitle); 
+            });
+        }
+    }, []);
+
 
     function onSubmit() {
         setIsLoading(true);
-
+        const userRef = firebase.firestore().collection('userpoints').doc(firebase.auth().currentUser.uid);
         const documentRef = firebase.firestore().collection('posts').doc();
         const fileRef = firebase.storage().ref('post-image/' + documentRef.id);
         const metadata = {
@@ -56,6 +68,7 @@ function NewPosts() {
                     topic: topicsName,
                     createdAt: firebase.firestore.Timestamp.now(),
                     author: {
+                        titlename: nowTitle || '',
                         displayName: firebase.auth().currentUser.displayName || '',
                         photoURL: firebase.auth().currentUser.photoURL || '',
                         uid: firebase.auth().currentUser.uid,
@@ -66,9 +79,20 @@ function NewPosts() {
                 .then(() => {
                     setIsLoading(false);
                     navigate("/posts");
+
+                    const batch = firebase.firestore().batch();
+                    batch.update(userRef, {
+                        points: firebase.firestore.FieldValue.increment(5)
+                    });
+                    batch.commit().then(() => {
+                        console.log("Points updated successfully");
+                    }).catch((error) => {
+                        console.error("Error updating points: ", error);
+                    });
                 });
             });
         });
+
        
     }
 

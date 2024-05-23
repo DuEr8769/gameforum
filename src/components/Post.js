@@ -10,6 +10,9 @@ function Post({ post }) {
             } size="small"/>
             <Item.Content>
                 <Item.Meta>
+                    <span style={{ fontWeight: 'bold', color: 'red' }}>
+                        {post.author.titlename || ''}
+                    </span>
                     {post.author.photoURL ? ( 
                         <Image src = {post.author.photoURL} avatar /> 
                     ) : (

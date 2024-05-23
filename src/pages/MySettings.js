@@ -1,8 +1,8 @@
-import { Button, Header, Input, Modal, Segment, Image} from "semantic-ui-react";
+import { Button, Header, Input, Modal, Segment, Image, Dropdown} from "semantic-ui-react";
 
 import 'firebase/compat/auth';
 import firebase from '../utils/firebase';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 
 
@@ -139,6 +139,7 @@ function MyPassword({ user }) {
         user.updatePassword(newPassword);
     }
 
+
     return (
     <>
         <Header size="small">
@@ -218,6 +219,74 @@ function MyRewards() {
     );
 }
 
+function MyTitle() {
+    const [redeemedRewards, setRedeemedRewards] = useState([]);
+    const [selectedReward, setSelectedReward] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const user = firebase.auth().currentUser;
+    const saveButtonRef = useRef(null);
+
+    useEffect(() => {
+        if (user) {
+            const documentRef = firebase.firestore().collection('userpoints').doc(user.uid);
+            documentRef.get().then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.redeemedRewards) {
+                        setRedeemedRewards(data.redeemedRewards);
+                    }
+                }
+                setLoading(false);
+            }).catch((err) => {
+                setError(err);
+                setLoading(false);
+            });
+        }
+    }, [user]);
+
+    function onSave() {
+        if (selectedReward && user) {
+            const documentRef = firebase.firestore().collection('userpoints').doc(user.uid);
+            documentRef.update({ nowtitle: selectedReward })
+                .then(() => {
+                    console.log(`Selected reward: ${selectedReward} has been saved.`);
+                })
+                .catch((error) => {
+                    console.error("Error updating document: ", error);
+                });
+        } else {
+            console.log('Save button clicked, but no reward selected or user not authenticated.');
+        }
+    }
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
+    return (
+        <>
+            <Header size="small">選擇稱號</Header>
+                <Dropdown
+                    placeholder='選擇稱號'
+                    selection
+                    options={[
+                        { key: '', text: '', value: '' },
+                        ...redeemedRewards.map(reward => ({
+                            key: reward,
+                            text: reward,
+                            value: reward,
+                        }))
+                    ]}
+                    onChange={(e, { value }) => setSelectedReward(value)}
+                    value={selectedReward}
+                />
+            <Button floated="right" ref={saveButtonRef}  onClick={onSave} disabled={!selectedReward}>儲存</Button>
+            <Segment vertical />
+
+        </>
+    );
+}
+
 function MySettings() {
     const [user, setUser] = useState({});
 
@@ -233,6 +302,7 @@ function MySettings() {
         <MyName user={user} />
         <MyPhoto user={user} />
         <MyPassword user={user} />
+        <MyTitle />
         <MyRewards />
         </>
     );
