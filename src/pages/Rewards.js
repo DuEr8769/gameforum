@@ -53,11 +53,9 @@ function Rewards() {
                 redeemedRewards: firebase.firestore.FieldValue.arrayUnion(name)
             });
             alert('兌換成功！');
-            // 更新使用者積分
             const updatedDoc = await firebase.firestore().collection("userpoints").doc(firebase.auth().currentUser.uid).get();
             setUserPoints(updatedDoc.data().points);
     
-            // 標記已兌換的獎勵
             setRedeemedRewards([...redeemedRewards, name]);
         } else {
             alert('積分不足！');

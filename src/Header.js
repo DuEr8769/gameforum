@@ -35,7 +35,6 @@ function Header({user}) {
     <Menu>
          
         <Menu.Item as={Link} to="/">啊哈姆特遊戲論壇</Menu.Item>
-        <Menu.Item as={Link} to="/gamenews">遊戲</Menu.Item>
         <Menu.Item as={Link} to="/posts">討論</Menu.Item>
         <Menu.Menu position='right'>
             <Menu.Item > 

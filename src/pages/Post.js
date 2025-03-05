@@ -56,7 +56,7 @@ function Post() {
                 : firebase.firestore.FieldValue.arrayUnion(uid),
         });
     
-        // 更新積分
+        
         if (field === 'likedBy') {
             const userRef = firebase.firestore().collection('userpoints').doc(uid);
             batch.update(userRef, {
@@ -103,7 +103,7 @@ function Post() {
 
         const userRef = firestore.collection('userpoints').doc(currentUser.uid);
         batch.update(userRef, {
-            points: firebase.firestore.FieldValue.increment(5) // 假設每次留言獲得5積分
+            points: firebase.firestore.FieldValue.increment(5)
         });
     
 
